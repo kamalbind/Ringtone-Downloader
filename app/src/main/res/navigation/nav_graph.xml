@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.technokraft.ringtone.view.fragment.Home"
+        android:label="Home" >
+        <action
+            android:id="@+id/action_home_to_preview"
+            app:destination="@id/preview" />
+    </fragment>
+    <fragment
+        android:id="@+id/preview"
+        android:name="com.technokraft.ringzone.view.Preview"
+        android:label="Preview" />
+</navigation>
