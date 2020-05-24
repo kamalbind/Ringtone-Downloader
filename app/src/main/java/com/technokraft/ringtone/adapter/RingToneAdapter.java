@@ -1,5 +1,6 @@
 package com.technokraft.ringtone.adapter;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,12 +14,16 @@ import com.technokraft.ringzone.databinding.RingtoneItemBinding;
 
 import java.util.List;
 
+import androidx.navigation.Navigation;
 
-public class RingToneAdapter extends RecyclerView.Adapter<RingToneAdapter.ViewHolder> implements SongEventListener {
+
+public class RingToneAdapter extends RecyclerView.Adapter<RingToneAdapter.ViewHolder> {
 
     private List<Song> songList;
 
-    public RingToneAdapter() {
+    SongEventListener mSongEventListener;
+    public RingToneAdapter(SongEventListener songEventListener) {
+        mSongEventListener = songEventListener;
     }
 
     public void setSongList(List<Song> sList){
@@ -30,23 +35,19 @@ public class RingToneAdapter extends RecyclerView.Adapter<RingToneAdapter.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         RingtoneItemBinding ringtoneItemBinding
                 = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()), R.layout.ringtone_item,viewGroup,false);
+        ringtoneItemBinding.setItemClickListener(mSongEventListener);
         return new ViewHolder(ringtoneItemBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.ringtoneItemBinding.setSong(songList.get(i));
-        viewHolder.ringtoneItemBinding.setItemClickListener(this);
     }
 
     @Override
     public int getItemCount() {
         if (songList == null) return 0;
         else return songList.size();
-    }
-
-    @Override
-    public void previewSongClick(Song song) {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

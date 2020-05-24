@@ -16,34 +16,39 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.technokraft.ringtone.model.Song;
 import com.technokraft.ringtone.adapter.RingToneAdapter;
-import com.technokraft.ringzone.databinding.FragmentHomeBinding;
+import com.technokraft.ringtone.interfaces.SongEventListener;
+import com.technokraft.ringtone.model.Song;
 import com.technokraft.ringtone.viewmodel.RingToneViewModel;
+import com.technokraft.ringzone.R;
+import com.technokraft.ringzone.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends Fragment {
+import androidx.navigation.Navigation;
+
+public class Home extends Fragment implements SongEventListener {
+
+    RingToneViewModel ringToneViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         final FragmentHomeBinding fragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false);
-        final RingToneViewModel ringToneViewModel = ViewModelProviders.of(requireActivity()).get(RingToneViewModel.class);
+        ringToneViewModel = ViewModelProviders.of(requireActivity()).get(RingToneViewModel.class);
         fragmentHomeBinding.setRingToneViewModel(ringToneViewModel);
         fragmentHomeBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final RingToneAdapter ringToneAdapter = new RingToneAdapter();
-        ringToneViewModel.getSongList().observe(this, new Observer<List<Song>>() {
+        final RingToneAdapter ringToneAdapter = new RingToneAdapter(this);
+        ringToneViewModel.songList.observe(this, new Observer<List<Song>>() {
             @Override
             public void onChanged(@Nullable List<Song> songs) {
                 if (songs.size() > 0) {
                     ringToneAdapter.setSongList(songs);
-                }
-                else {
-                   ringToneAdapter.setSongList(new ArrayList<Song>());
+                } else {
+                    ringToneAdapter.setSongList(new ArrayList<Song>());
                     Toast.makeText(requireActivity(), "No Data Found!", Toast.LENGTH_SHORT).show();
                 }
-                    fragmentHomeBinding.recyclerView.setAdapter(ringToneAdapter);
+                fragmentHomeBinding.recyclerView.setAdapter(ringToneAdapter);
             }
         });
 
@@ -62,5 +67,11 @@ public class Home extends Fragment {
         });
 
         return fragmentHomeBinding.getRoot();
+    }
+
+    @Override
+    public void previewSongClick(Song previewSong) {
+        ringToneViewModel.song.setValue(previewSong);
+        Navigation.findNavController(getActivity(), R.id.recycler_view).navigate(R.id.action_home_to_songPreview);
     }
 }

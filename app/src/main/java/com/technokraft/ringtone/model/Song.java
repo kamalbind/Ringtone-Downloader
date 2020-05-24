@@ -1,10 +1,5 @@
 package com.technokraft.ringtone.model;
 
-import android.databinding.BindingAdapter;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
-
 public class Song {
 
     private String wrapperType;
@@ -38,11 +33,6 @@ public class Song {
     private String currency;
     private String primaryGenreName;
     private String isStreamable;
-
-    @BindingAdapter("android:imageUrl")
-    public static void loadImage(ImageView view, String imageUrl) {
-        Picasso.get().load(imageUrl).into(view);
-    }
 
     public Song(String wrapperType, String kind, int artistId, int collectionId, int trackId, String artistName, String collectionName, String trackName, String collectionCensoredName, String trackCensoredName, String artistViewUrl, String collectionViewUrl, String trackViewUrl, String previewUrl, String artworkUrl30, String artworkUrl60, String artworkUrl100, float collectionPrice, float trackPrice, String releaseDate, String collectionExplicitness, String trackExplicitness, int discCount, int discNumber, int trackCount, int trackNumber, int trackTimeMillis, String country, String currency, String primaryGenreName, String isStreamable) {
         this.wrapperType = wrapperType;

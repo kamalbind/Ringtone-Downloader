@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/home">
 
     <fragment
@@ -8,11 +10,14 @@
         android:name="com.technokraft.ringtone.view.fragment.Home"
         android:label="Home" >
         <action
-            android:id="@+id/action_home_to_preview"
-            app:destination="@id/preview" />
+            android:id="@+id/action_home_to_songPreview"
+            app:destination="@id/songPreview" />
     </fragment>
     <fragment
-        android:id="@+id/preview"
-        android:name="com.technokraft.ringzone.view.Preview"
-        android:label="Preview" />
+        android:id="@+id/songPreview"
+        android:name="com.technokraft.ringtone.view.fragment.SongPreview"
+        android:label="fragment_song_preview"
+        tools:layout="@layout/fragment_song_preview" />
+
+
 </navigation>
