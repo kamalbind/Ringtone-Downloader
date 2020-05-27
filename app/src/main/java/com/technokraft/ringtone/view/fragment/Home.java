@@ -39,7 +39,7 @@ public class Home extends Fragment implements SongEventListener {
         fragmentHomeBinding.setRingToneViewModel(ringToneViewModel);
         fragmentHomeBinding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         final RingToneAdapter ringToneAdapter = new RingToneAdapter(this);
-        ringToneViewModel.songList.observe(this, new Observer<List<Song>>() {
+        ringToneViewModel.mSongList.observe(this, new Observer<List<Song>>() {
             @Override
             public void onChanged(@Nullable List<Song> songs) {
                 if (songs.size() > 0) {
@@ -52,7 +52,7 @@ public class Home extends Fragment implements SongEventListener {
             }
         });
 
-        // below code helps to make the keyboard search button utilised to search the song
+        // below code helps to make the keyboard search button utilised to search the mSong
         final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(requireActivity().INPUT_METHOD_SERVICE);
         fragmentHomeBinding.searchKey.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -66,12 +66,24 @@ public class Home extends Fragment implements SongEventListener {
             }
         });
 
+        ringToneViewModel.mSpinner.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean spinnerVisible) {
+                if (spinnerVisible) {
+                    fragmentHomeBinding.progressSpinner.setVisibility(View.VISIBLE);
+                } else {
+                    fragmentHomeBinding.progressSpinner.setVisibility(View.GONE);
+                }
+            }
+        });
+
         return fragmentHomeBinding.getRoot();
     }
 
     @Override
     public void previewSongClick(Song previewSong) {
-        ringToneViewModel.song.setValue(previewSong);
+        ringToneViewModel.mSong.setValue(previewSong);
+        ringToneViewModel.loadSound();
         Navigation.findNavController(getActivity(), R.id.recycler_view).navigate(R.id.action_home_to_songPreview);
     }
 }

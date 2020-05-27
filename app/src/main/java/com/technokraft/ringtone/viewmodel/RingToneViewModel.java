@@ -4,6 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.databinding.BindingAdapter;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
@@ -21,15 +23,18 @@ import com.technokraft.ringtone.model.Song;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 public class RingToneViewModel extends AndroidViewModel {
 
     private static final String TAG = "RingToneViewModel";
-    public MutableLiveData<String> searchKey = new MutableLiveData<>();
-    public MutableLiveData<List<Song>> songList = new MutableLiveData<>();
-    public MutableLiveData<Boolean> spinner = new MutableLiveData<>();
-    public MutableLiveData<Song> song = new MutableLiveData<>();
+    public MutableLiveData<String> mSearchKey = new MutableLiveData<>();
+    public MutableLiveData<List<Song>> mSongList = new MutableLiveData<>();
+    public MutableLiveData<Boolean> mSpinner = new MutableLiveData<>();
+    public MutableLiveData<Song> mSong = new MutableLiveData<>();
+    private MediaPlayer mMediaPlayer = new MediaPlayer();
+    public MutableLiveData<Boolean> isPrepaired = new MutableLiveData<>();
 
     RequestQueue requestQueue;
 
@@ -38,8 +43,8 @@ public class RingToneViewModel extends AndroidViewModel {
         public void onResponse(JSONObject response) {
             Gson gson = new Gson();
             ItunesResponse itunesResponse = gson.fromJson(response.toString(), ItunesResponse.class);
-            spinner.setValue(false);
-            songList.setValue(itunesResponse.getResults());
+            mSpinner.setValue(false);
+            mSongList.setValue(itunesResponse.getResults());
         }
     };
 
@@ -51,16 +56,15 @@ public class RingToneViewModel extends AndroidViewModel {
         }
     };
 
-
     public RingToneViewModel(@NonNull Application application) {
         super(application);
         requestQueue = Volley.newRequestQueue(application);
-        spinner.setValue(false);
+        mSpinner.setValue(false);
     }
 
     public void searchSong() {
-        spinner.setValue(true);
-        String key = searchKey.getValue().trim().replace(" ", "+");
+        mSpinner.setValue(true);
+        String key = mSearchKey.getValue().trim().replace(" ", "+");
         String url = "https://itunes.apple.com/search?term=" + key;
         requestQueue.add(new JsonObjectRequest(Request.Method.GET, url, onSuccess, onError));
     }
@@ -68,5 +72,34 @@ public class RingToneViewModel extends AndroidViewModel {
     @BindingAdapter("android:imageUrl")
     public static void loadImage(ImageView view, String imageUrl) {
         Picasso.get().load(imageUrl).into(view);
+    }
+
+    public void loadSound() {
+        isPrepaired.setValue(false);
+        mMediaPlayer.reset();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mMediaPlayer.setDataSource(mSong.getValue().getPreviewUrl());
+            mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                isPrepaired.setValue(true);
+                mediaPlayer.start();
+            }
+        });
+    }
+
+    public void playSound() {
+        if (isPrepaired.getValue()) {
+            mMediaPlayer.start();
+        }
+    }
+
+    public void stopSound() {
+        mMediaPlayer.stop();
     }
 }

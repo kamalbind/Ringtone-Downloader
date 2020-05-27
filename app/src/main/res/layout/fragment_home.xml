@@ -39,17 +39,17 @@
                     android:singleLine="true"
                     android:maxLines="1"
                     android:imeOptions="actionSearch"
-                    android:text="@={ringToneViewModel.searchKey}"/>
+                    android:text="@={ringToneViewModel.mSearchKey}"/>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <ProgressBar
+            android:id="@+id/progress_Spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="@{ringToneViewModel.spinner ? View.VISIBLE : View.GONE}"/>
+            android:indeterminate="true"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
