@@ -86,4 +86,10 @@ public class Home extends Fragment implements SongEventListener {
         ringToneViewModel.loadSound();
         Navigation.findNavController(getActivity(), R.id.recycler_view).navigate(R.id.action_home_to_songPreview);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ringToneViewModel.mMediaPlayer.reset();
+    }
 }

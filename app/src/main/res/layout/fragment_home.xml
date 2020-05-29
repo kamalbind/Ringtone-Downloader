@@ -39,6 +39,7 @@
                     android:singleLine="true"
                     android:maxLines="1"
                     android:imeOptions="actionSearch"
+                    android:hint="Search Song/Artist/Album"
                     android:text="@={ringToneViewModel.mSearchKey}"/>
             </LinearLayout>
 
